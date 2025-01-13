@@ -1,0 +1,12 @@
+pipeline {
+    agent any
+    stages {
+        stage('Ping pong') {
+            steps {
+                script {
+                    sh 'sudo ansible-playbook -i /etc/ansible/hosts/all /etc/ansible/playbook/ping-pong.yaml'
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+pipeline {
+    agent any
+    stages {
+        stage('Change html') {
+            steps {
+                script {
+                    sh 'sudo ansible-playbook -i /etc/ansible/hosts/my /etc/ansible/playbook/page.yaml'
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,113 @@
+pipeline {
+    agent any
+    stages {
+        stage('Install Zabbix Server dependencies') {
+            steps {
+                script {
+                    sh 'sudo apt-get update'
+                    sh 'sudo apt-get install -y mysql-server mysql-client apache2 php php-mysql php-gd php-curl php-mbstring php-bcmath snmpd snmp libsnmp-dev libiksemel-dev libcurl4-gnutls-dev libxml2-dev libssh2-1-dev libopenipmi-dev libevent-dev libpcre3-dev libssl-dev fping'
+                }
+            }
+        }
+
+        stage('Download Zabbix repository key') {
+            steps {
+                script {
+                    sh 'sudo wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest+ubuntu24.04_all.deb'
+                }
+            }
+        }
+
+        stage('Install Zabbix repository key') {
+            steps {
+                script {
+                    sh 'sudo dpkg -i zabbix-release_latest+ubuntu24.04_all.deb'
+                }
+            }
+        }
+
+        stage('Install Zabbix Server and frontend') {
+            steps {
+                script {
+                    sh 'sudo apt-get update'
+                    sh 'sudo apt-get install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent -y'
+                }
+            }
+        }
+
+        stage('Create Zabbix database and user') {
+            steps {
+                script {
+                    sh 'sudo mysql -uroot -e "DROP DATABASE IF EXISTS zabbix;"'
+                    sh 'sudo mysql -uroot -e "DROP USER \'zabbix\'@\'localhost\';"'
+                    sh 'sudo mysql -uroot -e "CREATE DATABASE zabbix CHARACTER SET utf8 COLLATE utf8_bin;"'
+                    sh 'sudo mysql -uroot -e "CREATE USER \'zabbix\'@\'localhost\' IDENTIFIED BY \'password\';"'
+                    sh 'sudo mysql -uroot -e "GRANT ALL PRIVILEGES ON zabbix.* TO \'zabbix\'@\'localhost\';"'
+                    sh 'sudo mysql -uroot -e "FLUSH PRIVILEGES;"'
+                }
+            }
+        }
+
+        stage('Import Zabbix database schema') {
+            steps {
+                script {
+                    sh 'sudo zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | sudo mysql --default-character-set=utf8mb4 -uroot zabbix'
+                }
+            }
+        }
+
+        stage('Configure Zabbix Server') {
+            steps {
+                script {
+                    sh 'sudo sed -i "s/# DBPassword=/DBPassword=password/" /etc/zabbix/zabbix_server.conf'
+                    sh 'sudo systemctl restart zabbix-server'
+                }
+            }
+        }
+
+        stage('Configure Apache web server') {
+            steps {
+                script {
+                    sh 'sudo sed -i "s|DocumentRoot /var/www/html|DocumentRoot /usr/share/zabbix|" /etc/apache2/sites-available/000-default.conf'
+                    sh 'sudo sed -i "s|# php_value date.timezone Europe/Riga|php_value date.timezone Europe/Kiev|" /etc/apache2/conf-available/zabbix.conf'
+                    sh 'sudo systemctl restart apache2'
+                }
+            }
+        }
+
+        stage('Configure SNMP') {
+            steps {
+                script {
+                    sh 'sudo sed -i "s/agentAddress  udp:127.0.0.1:161/#agentAddress  udp:127.0.0.1:161/" /etc/snmp/snmpd.conf'
+                    sh 'sudo systemctl restart snmpd'
+                }
+            }
+        }
+ 
+        stage('Install Zabbix Agent') {
+            steps {
+                script {
+                    sh 'sudo apt-get install -y zabbix-agent'
+                }
+            }
+        }
+
+        stage('Configure Zabbix Agent') {
+            steps {
+                script {
+                    sh 'sudo sed -i "s/Server=127.0.0.1/Server=zabbix_server_ip/" /etc/zabbix/zabbix_agentd.conf'
+                    sh 'sudo sed -i "s/ServerActive=127.0.0.1/ServerActive=zabbix_server_ip/" /etc/zabbix/zabbix_agentd.conf'
+                    sh 'sudo sed -i "s/Hostname=Zabbix server/Hostname=your_agent_hostname/" /etc/zabbix/zabbix_agentd.conf'
+                }
+            }
+        }
+
+        stage('Restart Zabbix Agent') {
+            steps {
+                script {
+                    sh 'sudo systemctl restart zabbix-agent'
+                }
+            }
+        }
+    }
+}
