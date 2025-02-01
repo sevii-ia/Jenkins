@@ -6,7 +6,7 @@ pipeline {
                 script {
                     sh 'sudo apt -y update'
                     sh 'sudo apt -y install docker.io'
-                    sh 'sudo snap -y install docker'
+                    sh 'sudo snap install docker'
                 }
             }
         }
