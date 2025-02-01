@@ -32,3 +32,5 @@ sudo chmod 600 /var/lib/jenkins/.ssh/id_ed25519
 sudo chmod 644 /var/lib/jenkins/.ssh/id_ed25519.pub
 sudo -u jenkins ssh-keyscan -t ed25519 github.com >> /var/lib/jenkins/.ssh/known_hosts
 sudo systemctl restart jenkins
+
+#jenkins ALL=(ALL) NOPASSWD: ALL
