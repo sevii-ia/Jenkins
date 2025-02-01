@@ -16,7 +16,7 @@ sudo systemctl enable jenkins
 sudo systemctl start jenkins
 sudo systemctl status jenkins
 
-cat /var/lib/jenkins/secrets/initialAdminPassword
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -C "vsevolod0823@gmail.com"
 
