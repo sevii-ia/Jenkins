@@ -42,23 +42,5 @@ pipeline {
                 }
             }
         }
-        stage("Docker login") {
-            steps {
-                echo " ============== docker login =================="
-                withCredentials([usernamePassword(credentialsId: '15216b62-7b73-4e47-8feb-20ca367185d5', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh '''
-                    docker login -u $USERNAME -p $PASSWORD
-                    '''
-                }
-            }
-        }
-        stage('Docker push') {
-            steps {
-                script {
-                    sh 'sudo docker tag 18_e_learn vsevolod0823/18_e_learn:latest'
-                    sh 'sudo docker push vsevolod0823/18_e_learn:latest'
-                }
-            }
-        }
     }
 }
