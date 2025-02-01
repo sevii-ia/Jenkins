@@ -4,9 +4,9 @@ pipeline {
         stage('install docker') {
             steps {
                 script {
-                    sh 'sudo apt update'
-                    sh 'sudo apt install docker.io'
-                    sh 'sudo snap install docker'
+                    sh 'sudo apt -y update'
+                    sh 'sudo apt -y install docker.io'
+                    sh 'sudo snap -y install docker'
                 }
             }
         }
