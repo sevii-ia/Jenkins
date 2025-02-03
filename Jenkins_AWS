@@ -9,6 +9,7 @@
             steps {
                 script {
                     sshagent([SSH_KEY_CREDENTIALS_ID]) {
+                        sh 'echo "Testing SSH connection..."'
                         sh 'ssh -o StrictHostKeyChecking=no -T $SSH_HOST "echo Connected"'
                     }
                 }
