@@ -1,44 +1,67 @@
-pipeline {
+    pipeline {
     agent any
+    environment {
+        SSH_HOST = 'ubuntu@your-server-ip'
+        SSH_KEY_CREDENTIALS_ID = '0f02751b-0c2b-4f71-8175-88adebca9886'
+    }
     stages {
+        stage('Setup SSH Connection') {
+            steps {
+                script {
+                    sshagent([SSH_KEY_CREDENTIALS_ID]) {
+                        sh 'ssh -o StrictHostKeyChecking=no -T $SSH_HOST "echo Connected"'
+                    }
+                }
+            }
+        }
         stage('install docker') {
             steps {
                 script {
+                    sshagent([SSH_KEY_CREDENTIALS_ID]) {
                     sh 'sudo apt -y update'
                     sh 'sudo apt -y install docker.io'
                     sh 'sudo snap install docker'
+                    }
                 }
             }
         }
         stage('git clone') {
             steps {
                 script {
+                    sshagent([SSH_KEY_CREDENTIALS_ID]) {
                     sh 'sudo rm -rf 18_E_LEARN'
                     sh 'git clone https://github.com/Cyber1993/18_E_LEARN.git'
+                    }
                 }
             }
         }
         stage('Change files') {
             steps {
                 script {
+                    sshagent([SSH_KEY_CREDENTIALS_ID]) {
                     sh 'PUBLIC_IP=$(curl -s ifconfig.me)'
                     sh 'sudo sed -i "s/10.7.170.14/$PUBLIC_IP/" "18_E_LEARN/18_E_LEARN.Web/appsettings.json"'
                     sh 'sudo sed -i "s/RUN dotnet tool install -g dotnet-ef/RUN dotnet tool install -g dotnet-ef --version 7.*/g" 18_E_LEARN/Dockerfile'
+                    }
                 }
             }
         }
         stage('Create database') {
             steps {
                 script {
+                    sshagent([SSH_KEY_CREDENTIALS_ID]) {
                     sh 'sudo docker rm 18_E_LEARN2 --force'
                     sh 'sudo docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Qwerty-1" -p 1433:1433 --name 18_E_LEARN2 --hostname sql1 -d mcr.microsoft.com/mssql/server:2022-latest'
+                    }
                 }
             }
         }
         stage('Build Docker') {
             steps {
                 script {
+                    sshagent([SSH_KEY_CREDENTIALS_ID]) {
                     sh 'sudo docker build -t 18_e_learn 18_E_LEARN'
+                    }
                 }
             }
         }
