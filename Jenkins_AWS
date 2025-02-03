@@ -11,6 +11,7 @@ pipeline {
                         sh 'ssh ubuntu@$IP "sudo apt -y update"'
                         sh 'ssh ubuntu@$IP "sudo apt -y install docker.io"'
                         sh 'ssh ubuntu@$IP "sudo snap install docker"'
+                        sh 'echo "Docker"'
                     }
                 }
             }
