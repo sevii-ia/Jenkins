@@ -30,7 +30,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'SSH_USER')]) {
                     sh '''
                         ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "PUBLIC_IP=$(curl -s ifconfig.me) && \
-                            sudo sed -i \\"s/10.7.170.14/$PUBLIC_IP/\\" 18_E_LEARN/18_E_LEARN.Web/appsettings.json"
+                            sudo sed -i \\"s/10.7.170.14/13.60.58.114/\\" 18_E_LEARN/18_E_LEARN.Web/appsettings.json"
                         ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo sed -i 's/RUN dotnet tool install -g dotnet-ef/RUN dotnet tool install -g dotnet-ef --version 7.*/g' 18_E_LEARN/Dockerfile"
                     '''
                 }
