@@ -1,68 +1,58 @@
 pipeline {
     agent any
     environment {
-        IP = '51.20.64.186'
+        IP = '13.60.58.114'
     }
     stages {
         stage('Install Docker') {
             steps {
-                script {
-                    sshagent(['0f02751b-0c2b-4f71-8175-88adebca9886']) {
-                        sh '''
-                            ssh ubuntu@$IP "sudo apt -y update && sudo apt -y install docker.io snapd"
-                            ssh ubuntu@$IP "sudo snap install docker"
-                            echo "Docker installed successfully"
-                        '''
-                    }
+                withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'SSH_USER')]) {
+                    sh '''
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo apt -y update && sudo apt -y install docker.io snapd"
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo snap install docker"
+                        echo "Docker installed successfully"
+                    '''
                 }
             }
         }
         stage('Git Clone') {
             steps {
-                script {
-                    sshagent(['0f02751b-0c2b-4f71-8175-88adebca9886']) {
-                        sh '''
-                            ssh ubuntu@$IP "sudo rm -rf 18_E_LEARN"
-                            ssh ubuntu@$IP "git clone https://github.com/Cyber1993/18_E_LEARN.git"
-                        '''
-                    }
+                withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'SSH_USER')]) {
+                    sh '''
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo rm -rf 18_E_LEARN"
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "git clone https://github.com/Cyber1993/18_E_LEARN.git"
+                    '''
                 }
             }
         }
         stage('Change Files') {
             steps {
-                script {
-                    sshagent(['0f02751b-0c2b-4f71-8175-88adebca9886']) {
-                        sh '''
-                            ssh ubuntu@$IP "PUBLIC_IP=$(curl -s ifconfig.me) && \
-                                sudo sed -i \\"s/10.7.170.14/$PUBLIC_IP/\\" 18_E_LEARN/18_E_LEARN.Web/appsettings.json"
-                            ssh ubuntu@$IP "sudo sed -i 's/RUN dotnet tool install -g dotnet-ef/RUN dotnet tool install -g dotnet-ef --version 7.*/g' 18_E_LEARN/Dockerfile"
-                        '''
-                    }
+                withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'SSH_USER')]) {
+                    sh '''
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "PUBLIC_IP=$(curl -s ifconfig.me) && \
+                            sudo sed -i \\"s/10.7.170.14/$PUBLIC_IP/\\" 18_E_LEARN/18_E_LEARN.Web/appsettings.json"
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo sed -i 's/RUN dotnet tool install -g dotnet-ef/RUN dotnet tool install -g dotnet-ef --version 7.*/g' 18_E_LEARN/Dockerfile"
+                    '''
                 }
             }
         }
         stage('Create Database') {
             steps {
-                script {
-                    sshagent(['0f02751b-0c2b-4f71-8175-88adebca9886']) {
-                        sh '''
-                            ssh ubuntu@$IP "sudo docker rm 18_E_LEARN2 --force || true"
-                            ssh ubuntu@$IP "sudo docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=Qwerty-1' \
-                                -p 1433:1433 --name 18_E_LEARN2 --hostname sql1 -d mcr.microsoft.com/mssql/server:2022-latest"
-                        '''
-                    }
+                withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'SSH_USER')]) {
+                    sh '''
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo docker rm 18_E_LEARN2 --force || true"
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=Qwerty-1' \
+                            -p 1433:1433 --name 18_E_LEARN2 --hostname sql1 -d mcr.microsoft.com/mssql/server:2022-latest"
+                    '''
                 }
             }
         }
         stage('Build Docker') {
             steps {
-                script {
-                    sshagent(['0f02751b-0c2b-4f71-8175-88adebca9886']) {
-                        sh '''
-                            ssh ubuntu@$IP "sudo docker build -t 18_e_learn 18_E_LEARN"
-                        '''
-                    }
+                withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'SSH_USER')]) {
+                    sh '''
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo docker build -t 18_e_learn 18_E_LEARN"
+                    '''
                 }
             }
         }
