@@ -12,7 +12,7 @@ pipeline {
         stage('Change files') {
             steps {
                 script {
-                    sh 'sudo sed -i "s/10.7.170.14/192.168.1.145/g" 18_E_LEARN/18_E_LEARN.Web/appsettings.json'
+                    sh 'sudo sed -i "s/10.7.170.14/192.168.1.147/g" 18_E_LEARN/18_E_LEARN.Web/appsettings.json'
                     sh 'sudo sed -i "s/RUN dotnet tool install -g dotnet-ef/RUN dotnet tool install -g dotnet-ef --version 7.*/g" 18_E_LEARN/Dockerfile'
                 }
             }
