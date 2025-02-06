@@ -8,6 +8,8 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'SSH_USER')]) {
                     sh '''
+                        echo "PEM file path: $PEM_FILE"
+                        ls -l $PEM_FILE
                         ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo apt -y update && sudo apt -y install docker.io snapd"
                         ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo snap install docker"
                         echo "Docker installed successfully"
