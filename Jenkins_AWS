@@ -13,6 +13,8 @@ pipeline {
                         ssh -i $PEM_FILE -o StrictHostKeyChecking=no ubuntu@$IP "sudo apt -y install docker.io snapd"
                     '''
                 }
+            }
+        }
         stage('Git Clone') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'SSH_USER')]) {
