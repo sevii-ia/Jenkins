@@ -52,7 +52,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'aws-ssh-key', keyFileVariable: 'PEM_FILE', usernameVariable: 'SSH_USER')]) {
                     sh '''
                         ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo docker build -t 18_e_learn 18_E_LEARN"
-                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo docker run -d -p 0.0.0.0:80:80 18_e_learn"
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no $SSH_USER@$IP "sudo docker run -d -p 0.0.0.0:90:80 18_e_learn"
                     '''
                 }
             }
