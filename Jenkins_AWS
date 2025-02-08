@@ -10,7 +10,7 @@ pipeline {
                     sh '''
                         chmod 400 $PEM_FILE
                         ssh -i $PEM_FILE -o StrictHostKeyChecking=no ubuntu@$IP "sudo apt -y update"
-                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no ubuntu@$IP "sudo apt -y install docker.io snapd"
+                        ssh -i $PEM_FILE -o StrictHostKeyChecking=no ubuntu@$IP "sudo apt -y install docker.io"
                     '''
                 }
             }
