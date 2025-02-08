@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     sh 'sudo docker build -t 18_e_learn 18_E_LEARN'
-                    sh 'sudo docker run -d -p 0.0.0.0:80:80 18_e_learn'
+                    sh 'sudo docker run -d -p 0.0.0.0:90:80 18_e_learn'
                 }
             }
         }
