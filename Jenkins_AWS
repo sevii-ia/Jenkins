@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        IP = '13.60.56.34'
+        IP = '13.51.6.34'
         SSH_USER = 'ubuntu'
     }
     stages {
