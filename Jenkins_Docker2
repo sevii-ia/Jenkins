@@ -58,10 +58,10 @@ pipeline {
         stage('Docker push') {
             steps {
                 script {
-                    sh 'sudo docker tag backend vsevolod0823/backend:latest'
-                    sh 'sudo docker push vsevolod0823/backend:latest'
-                    sh 'sudo docker tag frontend vsevolod0823/frontend:latest'
-                    sh 'sudo docker push vsevolod0823/frontend:latest'
+                    sh 'sudo docker tag backend vsevolod0823/cloud:backend'
+                    sh 'sudo docker push vsevolod0823/cloud:backend'
+                    sh 'sudo docker tag frontend vsevolod0823/cloud:frontend'
+                    sh 'sudo docker push vsevolod0823/cloud:frontend'
                 }
             }
         }
