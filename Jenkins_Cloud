@@ -14,7 +14,7 @@ pipeline {
                 script {
                     //def localIp = sh(script: "hostname -I | awk '{print \$1}'", returnStdout: true).trim()
                     //sh """sudo sed -i 's/10.10.13.27/${localIp}/g' /var/lib/jenkins/workspace/Cloud/cloud/BackEnd/Amazon-clone/ShopApi/appsettings.json"""
-                    sh 'sudo sed -i "s/10.7.170.14/1sql111/g" /var/lib/jenkins/workspace/Cloud/cloud/BackEnd/Amazon-clone/ShopApi/appsettings.json'
+                    sh 'sudo sed -i "s/10.10.13.27/sql111/g" /var/lib/jenkins/workspace/Cloud/cloud/BackEnd/Amazon-clone/ShopApi/appsettings.json'
                     sh 'sudo mv /var/lib/jenkins/workspace/Cloud/cloud/Dockerfile-bek /var/lib/jenkins/workspace/Cloud/cloud/BackEnd/Amazon-clone/Dockerfile'
                     sh 'sudo mv /var/lib/jenkins/workspace/Cloud/cloud/Dockerfile-front /var/lib/jenkins/workspace/Cloud/cloud/FrontEnd/my-app/Dockerfile'
                 }
