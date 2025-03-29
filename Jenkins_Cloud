@@ -63,5 +63,10 @@ pipeline {
                 }
             }
         }
+        stage('Start Grafana') {
+            steps {
+                sh 'sudo bash run.sh'
+            }
+        }
     }
 }
