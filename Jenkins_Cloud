@@ -65,7 +65,9 @@ pipeline {
         }
         stage('Start Grafana') {
             steps {
-                sh 'sudo bash run.sh'
+                sh 'sudo rm -rf Grafana'
+                sh 'git clone https://github.com/sevii-ia/Grafana.git'
+                sh 'sudo bash Grafana/run.sh'
             }
         }
     }
