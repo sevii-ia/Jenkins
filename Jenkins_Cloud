@@ -67,6 +67,7 @@ pipeline {
             steps {
                 sh 'sudo rm -rf Grafana'
                 sh 'git clone https://github.com/sevii-ia/Grafana.git'
+                sh 'sudo sed -i "s|docker-compose.yml|/var/lib/jenkins/workspace/Cloud/Grafana/docker-compose.yml|g" /var/lib/jenkins/workspace/Cloud/Grafana/docker-compose.yml'
                 sh 'sudo bash /var/lib/jenkins/workspace/Cloud/Grafana/run.sh'
             }
         }
