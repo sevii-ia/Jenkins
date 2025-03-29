@@ -67,6 +67,11 @@ pipeline {
         }
         stage('Start Grafana') {
             steps {
+                sh 'sudo docker rm monitoring_cadvisor* --force'
+                sh 'sudo docker rm monitoring_grafana* --force'
+                sh 'sudo docker rm monitoring_node-exporter* --force'
+                sh 'sudo docker rm monitoring_alertmanager* --force'
+                sh 'sudo docker rm monitoring_prometheus* --force'
                 sh 'sudo rm -rf Grafana'
                 sh 'git clone https://github.com/sevii-ia/Grafana.git'
                 sh 'sudo sed -i "s|docker-compose.yml|/var/lib/jenkins/workspace/Cloud/Grafana/docker-compose.yml|g" /var/lib/jenkins/workspace/Cloud/Grafana/run.sh'
