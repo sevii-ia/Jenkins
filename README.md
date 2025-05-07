@@ -109,5 +109,3 @@
 ```bash
 jenkins ALL=(ALL) NOPASSWD: ALL
 ```
-
-Тепер Jenkins повністю налаштовано та готовий до використання!
